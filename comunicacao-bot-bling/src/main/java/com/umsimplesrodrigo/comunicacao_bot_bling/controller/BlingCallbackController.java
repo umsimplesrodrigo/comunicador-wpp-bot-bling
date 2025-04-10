@@ -23,8 +23,8 @@ public class BlingCallbackController {
 
         BlingTokenResponse response = authService.exchangeCodeForToken(code);
 
-        System.out.println("Token recebido: " + response.getAccessToken());
+        System.out.println("Token received: " + response.getAccessToken());
 
-        return ResponseEntity.ok("Token recebido com sucesso");
+        return ResponseEntity.ok("Token received with success!");
     }
 }
