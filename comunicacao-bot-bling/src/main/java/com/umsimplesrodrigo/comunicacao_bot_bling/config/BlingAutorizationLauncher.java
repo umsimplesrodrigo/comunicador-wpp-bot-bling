@@ -18,7 +18,7 @@ public class BlingAutorizationLauncher implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception {
         String state = UUID.randomUUID().toString().replace("-", "");
-        String url = String.format("https://www.bling.com.br/Api/v3/oauth/authorize?response_type=code&cliente_id=%s&state=%s", mixcomId, state);
+        String url = String.format("https://www.bling.com.br/Api/v3/oauth/authorize?response_type=code&client_id=%s&state=%s", mixcomId, state);
 
         System.out.println("Opening browser for authentication on Bling...");
         openBrowser(url);
@@ -27,11 +27,22 @@ public class BlingAutorizationLauncher implements ApplicationRunner {
     private void openBrowser(String url) {
         try  {
             if (Desktop.isDesktopSupported()) {
-                Desktop.getDesktop().browse(new URI(url));
+                Desktop desktop = Desktop.getDesktop();
+
+                if (desktop.isSupported(Desktop.Action.BROWSE)) {
+                    desktop.browse(new URI(url));
+                    System.out.println("Browser opening with Desktop API!");
+                } else {
+                    System.out.println("Navigation action not supported!");
+                }
             } else {
-                System.out.println("Browser supported!");
+                System.out.println("Browser not supported! Trying alternative method...");
             }
+
+            Runtime.getRuntime().exec("rundll32 url.dll, FileProtocolHandler " + url);
+            System.out.println("Browser opening with alternative method!");
         } catch (Exception e) {
+            System.out.println("Error trying open browser!");
             e.printStackTrace();
         }
     }
